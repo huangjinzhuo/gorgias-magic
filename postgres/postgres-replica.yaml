@@ -137,7 +137,7 @@ spec:
       name: postgres-replica
     spec:
       accessModes: ["ReadWriteOnce"]
-      storageClassName: "ssd"
+      storageClassName: standard
       resources:
         requests:
           storage: 1Gi
