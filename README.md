@@ -20,7 +20,7 @@ Gorgias Magic is a todo list application in Python. It's built on Flask framewor
 
 ## Platform Architecture
 
-![Platform Architecture](./platform_architecture.png?raw=true "Platform Architecture")
+![Platform Architecture](./magic_app_architecture.png?raw=true "Platform Architecture")
 
 
 ## Requirements
