@@ -12,7 +12,7 @@ spec:
       containers:
         - name: flask-app
           imagePullPolicy: Always
-          image: huangjinzhuo/gorgias-magic:latest
+          image: gcr.io/gorgias-magic-777/gorgias-magic:latest
           resources:
             requests:
               cpu: "50m"
