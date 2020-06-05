@@ -17,15 +17,13 @@ export GCP_USER=$(gcloud config get-value account)
 export GCP_PROJECT=$(gcloud config get-value core/project)
 (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
 (gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
+gcloud config set compute/zone $CLUSTER_ZONE
+# Set ENV variables.  
 export APP_ZONE=$CLUSTER_ZONE
 export APP_DIR=$HOME/gorgias-magic
-gcloud config set compute/zone $CLUSTER_ZONE
-
-# Set ENV variables.  
 # export POSTGRES_DB_USER="postgres"
 # export POSTGRES_DB_PSWD="postgres"
 # export SERVICE_POSTGRES_SERVICE_HOST="127.0.0.1"
-
 
 # check if GKE cluster is running, if not create it
 (gcloud container clusters list  | grep $CLUSTER_NAME) || gcloud container clusters create gorgias-magic  --zone=$APP_ZONE --num-nodes 2
@@ -41,12 +39,10 @@ kubectl create clusterrolebinding cluster-admin-binding \
 
 
 
+
 # find application path. If not exist, download gorgias-magic
 [ ! -d $APP_DIR ] && git clone https://github.com/huangjinzhuo/gorgias-magic.git 
 cd $APP_DIR
-
-
-
 
 
 #### Deploy Postgres master and replica ####
