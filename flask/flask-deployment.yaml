@@ -21,7 +21,7 @@ spec:
               cpu: "500m"
               memory: "128Mi"
           env:
-            - name: SERVICE_POSTGRES_SERVICE_HOST
+            - name: POSTGRES_SERVICE_HOST
               value: postgres.default.svc.cluster.local
             - name: POSTGRES_DB_USER
               valueFrom:
@@ -35,11 +35,3 @@ spec:
                   key: password
           ports:
             - containerPort: 5000
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 5000
-            periodSeconds: 10
-            timeoutSeconds: 3
-            successThreshold: 1
-            failureThreshold: 5

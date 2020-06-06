@@ -10,12 +10,12 @@ app = Flask(__name__)
 
 db_user = os.environ.get('POSTGRES_DB_USER')
 db_pswd = os.environ.get('POSTGRES_DB_PSWD')
-db_host = os.environ.get('SERVICE_POSTGRES_SERVICE_HOST')
+db_host = os.environ.get('POSTGRES_SERVICE_HOST')
 
 # disregard warning messages
 app.config['SQLAlchemy_TRACK_MODIFICATIONS'] = False
-# database location and name of database (launchpage)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{0}:{1}@{2}/launchpage'.format(
+# database location and name of database (Todo)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{0}:{1}@{2}/Todo'.format(
     db_user, db_pswd, db_host
 )
 
