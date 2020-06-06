@@ -5,8 +5,9 @@
 # Sign in to Google Cloud Platform Cloud Console with an account that has permission to manage the GKE
 # GCP Cloud Console: https://console.cloud.google.com/
 # select your project. 
-# Make sure Kubernetes Engine API on the project is enabled:
+# Make sure Kubernetes Engine API, and Cloud Build API on the project are enabled. If not:
 # Navigation Menu - "APIs & Services" - "Library" - search for "Kuberetes" - "Kubernetes Engine API" - "Enable".
+# Navigation Menu - "APIs & Services" - "Library" - search for "Build" - "Cloud Build API" - "Enable".
 # click on  >_  to activate Cloud Shell from Cloud Console. All commands below are run in Cloud Shell
 
 # assign cluster name variable
@@ -78,3 +79,11 @@ kubectl logs -f postgres-replica-0
 
 #### Deploy Flask application ####
 
+# Build Docker Image 
+cd $APP_DIR/flask
+gcloud builds submit -t gcr.io/$GCP_PROJECT/gorgias-magic ./
+
+# Dedploy the Flask app
+kubectl apply -f ./flask/flask-deployment.yaml
+
+gcloud 
