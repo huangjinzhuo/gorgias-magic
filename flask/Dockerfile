@@ -19,12 +19,4 @@ COPY . $APP_ROOT
 
 EXPOSE 5000
 
-ENTRYPOINT gunicorn \
-        --access-logfile="-"                   \
-        --error-logfile="-"                    \
-        --bind=0.0.0.0:5000                    \
-        --worker-class=sync                    \
-        --workers=1                            \
-        --keep-alive=10                        \
-        --graceful-timeout=10                  \
-        app:app
+CMD ["python3", "/app/app.py"]

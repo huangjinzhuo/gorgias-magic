@@ -53,11 +53,10 @@ def index(todo):
 
 
 @app.route('/')
-def get_todo(todo):
-    '''get todo list'''
+def get_todo():
+    '''Readiness Probe'''
 
-    todo = Todo.query.all()
-    return '<h1>Readiness Probe Return Page!</h1>'
+    return '<h1>Readiness Probe Return Page! User: {db_user}, Host: {db_host}.</h1>'
 #    return f'{ todo.todo } expires in { todo.days } from { todo.date_created }'
 
 
