@@ -22,7 +22,7 @@ spec:
               memory: "128Mi"
           env:
             - name: SERVICE_POSTGRES_SERVICE_HOST
-              value: service-postgres.default.svc.cluster.local
+              value: postgres.default.svc.cluster.local
             - name: POSTGRES_DB_USER
               valueFrom:
                 secretKeyRef:
