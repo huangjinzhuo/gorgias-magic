@@ -80,10 +80,10 @@ kubectl logs -f postgres-replica-0
 #### Deploy Flask application ####
 
 # Build Docker Image 
-cd $APP_DIR/flask
+cd $APP_DIR
 gcloud builds submit -t gcr.io/$GCP_PROJECT/gorgias-magic ./
 
 # Dedploy the Flask app
-kubectl apply -f ./flask/flask-deployment.yaml
+kubectl apply -f ./flask-deployment.yaml
 
 gcloud 
