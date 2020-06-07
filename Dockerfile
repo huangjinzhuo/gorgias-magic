@@ -11,7 +11,7 @@ COPY requirements.txt /requirements.txt
 # Installing required modules
 RUN pip3 --no-cache-dir install -r /requirements.txt
 
-ENV APP_ROOT '/application'
+ENV APP_ROOT '/gorgias-magic'
 RUN mkdir -p $APP_ROOT
 
 WORKDIR $APP_ROOT
