@@ -1,4 +1,4 @@
-FROM python:3.6.6-alpine3.8
+FROM ubuntu
 
 LABEL maintainer="huangjinzhuo@gmail.com"
 
