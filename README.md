@@ -3,7 +3,7 @@
 
 
 ## Table of Contents
-1. [Gorgias Magic](README.md#Gorgias-Magic)
+1. [Gorgias Magic](README.md#What-is-Gorgias-Magic?)
 1. [Requirements](README.md#Requirements)
 1. [Platform Architecture](README.md#Platform-Architecture)
 1. [Auto Deployment](README.md#Auto-Deployment)
@@ -11,12 +11,9 @@
 
 
 
+## What is Gorgias Magic?
 
-
-
-## Gorgias Magic
-
-Gorgias Magic is a todo list application in Python. It's built on Flask framework and Postgres SQL. The instruction is for deploying the application to GCP Kubernetes Engine, with Google Cloud HTTP(S) Load Balancer as frontend. 
+Gorgias Magic is a todo list application written Python. It's built on Flask framework and uses Postgres SQL. The instruction is for deploying a Postgres cluster, and the application to a GCP Kubernetes Engine(GKE) cluster. The instruction will also automatically create the GKE clustetr if it's not exist, and automatically create a Google Cloud HTTP Load Balancer to serve in the frontend. 
 
 ## Platform Architecture
 
@@ -25,10 +22,16 @@ Gorgias Magic is a todo list application in Python. It's built on Flask framewor
 
 ## Requirements
 
-## Auto Deployment
+1. You have a GCP account and password to login to GCP Cloud Console,
+2. You have a project, and Kubernetes Engine API and Cloud Build API on the project are enabled. [Here is the instruction on how to enable them](README.md#What-is-Gorgias-Magic?)
 
-Instructions here. 
-Use Kubernetes StatefulSets to get a Postgres instance running with replication enabled. This also uses the [standard Postgres container](https://github.com/docker-library/postgres). Replication is achieved by streaming replcation instead of log shipping replication, and allow [warm standby.](https://www.postgresql.org/docs/current/warm-standby.html)
+## Deployment
+
+### Deploying a Postgres cluster
+
+Use Kubernetes StatefulSets to get a Postgres instance running with replication enabled. This also uses the [standard Postgres container](https://github.com/docker-library/postgres). Replication is achieved by streaming replcation instead of log shipping, and allow [warm standby.](https://www.postgresql.org/docs/current/warm-standby.html)
+
+1. 
 
 
 ## SRE Considerations

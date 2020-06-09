@@ -89,4 +89,4 @@ gcloud builds submit -t gcr.io/$GCP_PROJECT/gorgias-magic ./
 # Dedploy the Flask app
 kubectl apply -f ./flask-deployment.yaml
 
-gcloud 
+kubectl get pods 
