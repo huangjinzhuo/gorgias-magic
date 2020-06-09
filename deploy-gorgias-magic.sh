@@ -19,12 +19,16 @@ export GCP_PROJECT=$(gcloud config get-value core/project)
 (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
 (gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
 gcloud config set compute/zone $CLUSTER_ZONE
-# Set ENV variables.  
 export APP_ZONE=$CLUSTER_ZONE
 export APP_DIR=$HOME/gorgias-magic
+
+
+# Set ENV variables for connecting to local PostgreSQL for local testing only.  
 # export POSTGRES_DB_USER="postgres"
 # export POSTGRES_DB_PSWD="postgres"
-# export SERVICE_POSTGRES_SERVICE_HOST="127.0.0.1"
+# export POSTGRES_SERVICE_HOST="127.0.0.1"
+# export POSTGRES_SERVICE_PORT="5432"
+# export POSTGRES_DB_NAME="postgres"
 
 # check if GKE cluster is running, if not create it
 (gcloud container clusters list  | grep $CLUSTER_NAME) || gcloud container clusters create gorgias-magic  --zone=$APP_ZONE --num-nodes 2
@@ -36,7 +40,6 @@ gcloud container clusters get-credentials $CLUSTER_NAME \
 kubectl create clusterrolebinding cluster-admin-binding \
 --clusterrole cluster-admin \
 --user $GCP_USER
-
 
 
 
