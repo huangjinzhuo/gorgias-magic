@@ -23,7 +23,7 @@ Gorgias Magic is a todo list application written Python. It's built on Flask fra
 ## Requirements
 
 1. You have a GCP account and password to login to GCP Cloud Console,
-2. You have a project, and Kubernetes Engine API and Cloud Build API on the project are enabled. [Here is the instruction on how to enable them](README.md#What-is-Gorgias-Magic?)
+2. You have a project, and Kubernetes Engine API and Cloud Build API on the project are enabled. [Here is the instruction on how to enable them](Other_README.md#Enable-APIs)
 
 ## Deployment
 
