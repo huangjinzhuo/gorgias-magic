@@ -3,3 +3,4 @@ Pipfile.lock
 Pipfile
 sqlite.py
 __pycache__/
+install_postgresql.sh
