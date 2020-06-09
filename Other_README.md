@@ -17,10 +17,12 @@ Select your project.
 
 ## Enable APIs
 
-Make sure Kubernetes Engine API, and Cloud Build API on the project are enabled. If not:
+Enable Kubernetes Engine API if not already:
 Navigation Menu - "APIs & Services" - "Library" - search for "Kuberetes" - "Kubernetes Engine API" - "Enable".
+
+Enable Cloud Build API if not already:
 Navigation Menu - "APIs & Services" - "Library" - search for "Build" - "Cloud Build API" - "Enable".
 
 ## Open Cloud Shell
 
-On GCP Cloud Console, click on  >_  to activate Cloud Shell from Cloud Console.
+On GCP Cloud Console, click on  >_ to activate Cloud Shell from Cloud Console.

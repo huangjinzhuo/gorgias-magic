@@ -1,19 +1,21 @@
 # Requirements: 
 # 1. You have GCP account and password to login to GCP Cloud Console
-# 2. You have a project, and Kubernetes Engine API on the project is enabled.
+# 2. You have a project, with the Kubernetes Engine API and Cloud Build API on the project enabled.
+## Sign in to Google Cloud Platform Cloud Console with an account that has permission to manage the GKE
+## GCP Cloud Console: https://console.cloud.google.com/
+## select your project. 
+## Make sure Kubernetes Engine API, and Cloud Build API on the project are enabled. If not:
+## Navigation Menu - "APIs & Services" - "Library" - search for "Kuberetes" - "Kubernetes Engine API" - "Enable".
+## Navigation Menu - "APIs & Services" - "Library" - search for "Build" - "Cloud Build API" - "Enable".
+## click on  >_  to activate Cloud Shell from Cloud Console. All commands below are run in Cloud Shell
 
-# Sign in to Google Cloud Platform Cloud Console with an account that has permission to manage the GKE
-# GCP Cloud Console: https://console.cloud.google.com/
-# select your project. 
-# Make sure Kubernetes Engine API, and Cloud Build API on the project are enabled. If not:
-# Navigation Menu - "APIs & Services" - "Library" - search for "Kuberetes" - "Kubernetes Engine API" - "Enable".
-# Navigation Menu - "APIs & Services" - "Library" - search for "Build" - "Cloud Build API" - "Enable".
-# click on  >_  to activate Cloud Shell from Cloud Console. All commands below are run in Cloud Shell
 
-# assign cluster name variable
+
+
+# Set your GKE cluster name and assign it to env variable on your Cloud Shell
 export CLUSTER_NAME=gorgias-magic
 
-# get user account, project, and other env variables
+# Set user account, project, and other env variables
 export GCP_USER=$(gcloud config get-value account)
 export GCP_PROJECT=$(gcloud config get-value core/project)
 (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
