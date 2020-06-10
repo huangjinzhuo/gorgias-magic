@@ -1,7 +1,7 @@
 #### Requirements ####
 
-# 1. You have GCP account and password to login to GCP Cloud Console
-# 2. You have a project, with the Kubernetes Engine API and Cloud Build API on the project enabled.
+# 1. You have a GCP account and password to login to GCP Cloud Console
+# 2. You have a GCP project, with the Kubernetes Engine API and Cloud Build API on the project enabled.
 ## Sign in to Google Cloud Platform Cloud Console with an account that has permission to manage the GKE
 ## GCP Cloud Console: https://console.cloud.google.com/
 ## select your project, or create a new one. The project name be assigned to environment variable $GCP_PROJECT.
@@ -47,6 +47,7 @@ gcloud container clusters get-credentials $CLUSTER_NAME \
 kubectl create clusterrolebinding cluster-admin-binding \
 --clusterrole cluster-admin \
 --user $GCP_USER
+
 
 # Find the application path. If not exist, download the application gorgias-magic
 [ ! -d $APP_DIR ] && git clone https://github.com/huangjinzhuo/gorgias-magic.git 
@@ -100,7 +101,10 @@ done
 kubectl apply -f postgres-replica.yaml
 
 # Check replication
-kubectl logs -f postgres-replica-0
+kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"
+# If you see "Started streaming WAL from primary", the replication is working.
+
+
 
 
 
