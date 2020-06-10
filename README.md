@@ -31,7 +31,15 @@ Gorgias Magic is a todo list application written Python. It's built on Flask fra
 
 Use Kubernetes StatefulSets to get a Postgres instance running with replication enabled. This also uses the [standard Postgres container](https://github.com/docker-library/postgres). Replication is achieved by streaming replcation instead of log shipping, and allow [warm standby.](https://www.postgresql.org/docs/current/warm-standby.html)
 
-1. 
+1. run batch script to deploy Postgres cluster:             . deploy-postgres.sh
+2. run interactive script to create database and table:     create-db.sh
+3. run batch script to deploy Gorgias Magic application:    . deploy-gorgias-magic.sh
+4. follow the last message of step 3 to find out EXTERNAL-IP. There are 4 links:
+    http://<EXTERNAL-IP>                                        Readiness Probe page.
+    http://<EXTERNAL-IP>/all                                    List all todo entries.
+    http://<EXTERNAL-IP>/<todo-description>/<number-of-days>    Create a todo entry. For example:   http://34.70.91.51/pickup%20some%20milk/2
+    http://<EXTERNAL-IP>/<todo-description>                     List a todo entry
+
 
 
 ## SRE Considerations
