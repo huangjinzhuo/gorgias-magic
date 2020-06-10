@@ -37,6 +37,6 @@ spec:
                   name: postgres
                   key: password
             - name: POSTGRES_DB_NAME
-              value: postgres
+              value: magicdb
           ports:
             - containerPort: 5000
