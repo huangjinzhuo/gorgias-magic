@@ -6,7 +6,8 @@
 1. [Gorgias Magic](README.md#What-is-Gorgias-Magic?)
 1. [Requirements](README.md#Requirements)
 1. [Platform Architecture](README.md#Platform-Architecture)
-1. [Auto Deployment](README.md#Auto-Deployment)
+1. [Deployment](README.md#Auto-Deployment)
+1. [Use the Application](README.md#Use-the-Gorgias-Magic-application)
 1. [SRE Considerations](README.md#SRE-Considerations)
 
 
@@ -27,18 +28,25 @@ Gorgias Magic is a todo list application written Python. It's built on Flask fra
 
 ## Deployment
 
-### Deploying a Postgres cluster
-
+#### Deploying a Postgres cluster
 Use Kubernetes StatefulSets to get a Postgres instance running with replication enabled. This also uses the [standard Postgres container](https://github.com/docker-library/postgres). Replication is achieved by streaming replcation instead of log shipping, and allow [warm standby.](https://www.postgresql.org/docs/current/warm-standby.html)
 
-1. run batch script to deploy Postgres cluster:             . deploy-postgres.sh
-2. run interactive script to create database and table:     create-db.sh
-3. run batch script to deploy Gorgias Magic application:    . deploy-gorgias-magic.sh
-4. follow the last message of step 3 to find out EXTERNAL-IP. There are 4 links:
-    http://<EXTERNAL-IP>                                        Readiness Probe page.
-    http://<EXTERNAL-IP>/all                                    List all todo entries.
-    http://<EXTERNAL-IP>/<todo-description>/<number-of-days>    Create a todo entry. For example:   http://34.70.91.51/pickup%20some%20milk/2
-    http://<EXTERNAL-IP>/<todo-description>                     List a todo entry
+run batch script to deploy Postgres cluster:             [. deploy-postgres.sh](deploy-postgres.sh)
+
+#### Create a Database and a Table
+run interactive script to create database and table:     [create-db.sh](create-db.sh)
+
+#### Deploy Gorgias Magic application
+run batch script to deploy Gorgias Magic application:    [. deploy-gorgias-magic.sh](deploy-gorgias-magic.sh)
+
+
+## Use the Gorgias Magic application
+
+Find out the EXTERNAL-IP of gorgias-service.  There are 4 links:
+1. http://EXTERNAL-IP                                   Readiness Probe page.
+2. http://EXTERNAL-IP/all                               List all todo entries.
+3. http://EXTERNAL-IP/todo-description/number-of-days   Create a todo entry. e.g.:   http://34.70.91.51/pickup%20some%20milk/2
+4. http://EXTERNAL-IP/todo-description                  List a todo entry
 
 
 
