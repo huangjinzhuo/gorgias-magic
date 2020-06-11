@@ -15,7 +15,7 @@
 
 # Find the application path. If not exist, download the application gorgias-magic
 export APP_DIR=$HOME/gorgias-magic
-[ ! -d $APP_DIR ] && git clone https://github.com/huangjinzhuo/gorgias-magic.git 
+[ ! -d $APP_DIR ] && cd $HOME && git clone https://github.com/huangjinzhuo/gorgias-magic.git 
 cd $APP_DIR
 # Now you can see this file at current directory. And you can continue this script step by step. Or just run
 # . deploy-postgres.sh          # Don't forget the dot(.) at the beginning
