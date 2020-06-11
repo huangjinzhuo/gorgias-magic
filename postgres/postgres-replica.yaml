@@ -17,13 +17,14 @@ spec:
       labels:
         app: postgres-replica 
     spec:
+      terminationGracePeriodSeconds: 10
       volumes:
         - name: postgres-config
           configMap:
             name: postgres
-            
-      terminationGracePeriodSeconds: 10
-      
+        - name: gce-disk-postgres-replica
+          persistentVolumeClaim:
+            claimName: gorgias-postgres-replica-0
       initContainers:
         - name: setup-replica-data-directory
           image: postgres:10.5
@@ -48,7 +49,8 @@ spec:
             fi
           volumeMounts:
             - mountPath: /var/lib/postgresql/data/pgdata
-              name: postgres-replica
+              name: gce-disk-postgres-replica
+#              name: postgres-replica
               subPath: postgres-db
 
       containers:
@@ -119,7 +121,8 @@ spec:
 
           volumeMounts:
             - mountPath: /var/lib/postgresql/data/pgdata
-              name: postgres-replica
+              name: gce-disk-postgres-replica
+#              name: postgres-replica
               subPath: postgres-db
             
             - name: postgres-config
@@ -134,10 +137,11 @@ spec:
           
   volumeClaimTemplates:
   - metadata:
-      name: postgres-replica
+#    name: postgres
+    name: gorgias
     spec:
       accessModes: ["ReadWriteOnce"]
-      storageClassName: standard
+      storageClassName: ssd-faster
       resources:
         requests:
-          storage: 1Gi
+          storage: 15Gi

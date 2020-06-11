@@ -17,13 +17,14 @@ spec:
       labels:
         app: postgres 
     spec:
+      terminationGracePeriodSeconds: 10
       volumes:
         - name: postgres-config
           configMap:
             name: postgres
-            
-      terminationGracePeriodSeconds: 10
-
+        - name: gce-disk-postgres
+          persistentVolumeClaim:
+            claimName: gorgias-postgres-0
       containers:
         - name: postgres
           image: postgres:10.5
@@ -98,7 +99,8 @@ spec:
 
           volumeMounts:
             - mountPath: /var/lib/postgresql/data/pgdata
-              name: postgres
+              name: gce-disk-postgres
+#              name: postgres
               subPath: postgres-db
               
             - name: postgres-config
@@ -119,10 +121,11 @@ spec:
           
   volumeClaimTemplates:
   - metadata:
-      name: postgres
+#      name: postgres
+      name: gorgias
     spec:
       accessModes: ["ReadWriteOnce"]
-      storageClassName: "standard"
+      storageClassName: "ssd-faster"
       resources:
         requests:
-          storage: 1Gi
+          storage: 15Gi

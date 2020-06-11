@@ -1,57 +1,51 @@
-kind: PersistentVolumeClaim
-apiVersion: v1
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
 metadata:
-  name: postgres-main-claim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-    
----
-
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: postgres-replica-claim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-    
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: postgres-main-pv
-  labels:
-    type: local
-    app: postgres
-spec:
-  storageClassName: standard
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteMany
-  hostPath:
-    path: "/mnt/data"    
+  name: ssd-faster
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
 
 ---
-kind: PersistentVolume
 apiVersion: v1
+kind: PersistentVolume
 metadata:
-  name: postgres-replica-pv
+  name: postgres-pv   
   labels:
-    type: local
+    type: gcePersistentDisk
     app: postgres
 spec:
-  storageClassName: standard
+  storageClassName: ssd-faster
   capacity:
-    storage: 5Gi
+    storage: 15Gi
   accessModes:
-    - ReadWriteMany
-  hostPath:
-    path: "/mnt/data"
+    - ReadWriteOnce
+  claimRef:
+    namespace: default
+    name: gorgias-postgres-0
+  persistentVolumeReclaimPolicy: Retain
+  gcePersistentDisk:
+    pdName: postgres-disk
+    fsType: xfs
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-replica-pv   
+  labels:
+    type: gcePersistentDisk
+    app: postgres
+spec:
+  storageClassName: ssd-faster
+  capacity:
+    storage: 15Gi
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: default
+    name: gorgias-postgres-replica-0
+  persistentVolumeReclaimPolicy: Retain
+  gcePersistentDisk:
+    pdName: postgres-replica-disk
+    fsType: xfs
