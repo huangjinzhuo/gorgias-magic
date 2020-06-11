@@ -75,6 +75,9 @@ kubectl create configmap postgres \
 --from-file=pg_hba.conf \
 --from-file=create-replica-user.sh
 
+# Create Persitent Disks in GCE. (won't override if they already exist)
+gcloud compute disks create postgres-disk postgres-replica-disk --size 20GB --zone=$CLUSTER_ZONE
+
 # Deploy the Postgres master and wait till it's running
 kubectl apply -f postgres-master.yaml
 # Deploy Postgres service (for both posgres master and replica)
