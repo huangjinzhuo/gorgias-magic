@@ -5,11 +5,20 @@
 ## Sign in to Google Cloud Platform Cloud Console with an account that has permission to manage the GKE
 ## GCP Cloud Console: https://console.cloud.google.com/
 ## select your project, or create a new one. The project name be assigned to environment variable $GCP_PROJECT.
-## Make sure Kubernetes Engine API, and Cloud Build API on the project are enabled. If not:
+## Make sure Kubernetes Engine API, Cloud Build API, and Compute Engine API on the project are enabled. If not:
 ## Navigation Menu - "APIs & Services" - "Library" - search for "Kuberetes" - "Kubernetes Engine API" - "Enable".
 ## Navigation Menu - "APIs & Services" - "Library" - search for "Build" - "Cloud Build API" - "Enable".
+## Navigation Menu - "APIs & Services" - "Library" - search for "Compute" - "Compute Engine API" - "Enable".
 ## click on  >_  to activate Cloud Shell from Cloud Console. All commands below are run in Cloud Shell
 
+
+
+# Find the application path. If not exist, download the application gorgias-magic
+export APP_DIR=$HOME/gorgias-magic
+[ ! -d $APP_DIR ] && git clone https://github.com/huangjinzhuo/gorgias-magic.git 
+cd $APP_DIR
+# Now you can see this file at current directory. And you can continue this script step by step. Or just run
+# . deploy-postgres.sh          # Don't forget the dot(.) at the beginning
 
 
 #### Get GKE cluster ready ####
@@ -35,7 +44,7 @@ export GCP_USER=$(gcloud config get-value account)
 (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
 (gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
 gcloud config set compute/zone $CLUSTER_ZONE
-export APP_DIR=$HOME/gorgias-magic
+
 
 # Check if GKE cluster is running. If not, create it
 (gcloud container clusters list  | grep $CLUSTER_NAME) || gcloud container clusters create $CLUSTER_NAME  --zone=$CLUSTER_ZONE --num-nodes 2
@@ -47,12 +56,6 @@ gcloud container clusters get-credentials $CLUSTER_NAME \
 kubectl create clusterrolebinding cluster-admin-binding \
 --clusterrole cluster-admin \
 --user $GCP_USER
-
-
-# Find the application path. If not exist, download the application gorgias-magic
-[ ! -d $APP_DIR ] && git clone https://github.com/huangjinzhuo/gorgias-magic.git 
-cd $APP_DIR
-
 
 
 
