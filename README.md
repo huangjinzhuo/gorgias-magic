@@ -31,13 +31,14 @@ Gorgias Magic is a todo list application written Python. It's built on Flask fra
 #### Deploying a Postgres cluster
 Use Kubernetes StatefulSets to get a Postgres instance running with replication enabled. This also uses the [standard Postgres container](https://github.com/docker-library/postgres). Replication is achieved by streaming replcation instead of log shipping, and allow [warm standby.](https://www.postgresql.org/docs/current/warm-standby.html)
 
-run batch script to deploy Postgres cluster:             [. deploy-postgres.sh](deploy-postgres.sh)
+Read the first section of deploy-postgres.sh, and clone this repo to your Cloud Shell.
+Run batch script to deploy Postgres cluster:             [. deploy-postgres.sh](deploy-postgres.sh)
 
 #### Create a Database and a Table
-run interactive script to create database and table:     [create-db.sh](create-db.sh)
+Run interactive script to create database and table:     [create-db.sh](create-db.sh)
 
 #### Deploy Gorgias Magic application
-run batch script to deploy Gorgias Magic application:    [. deploy-gorgias-magic.sh](deploy-gorgias-magic.sh)
+Run batch script to deploy Gorgias Magic application:    [. deploy-gorgias-magic.sh](deploy-gorgias-magic.sh)
 
 
 ## Use the Gorgias Magic application
