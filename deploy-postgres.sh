@@ -21,7 +21,7 @@ cd $APP_DIR
 # . deploy-postgres.sh          # Don't forget the dot(.) at the beginning
 
 
-#### Get GKE cluster ready ####
+#### Set variables ####
 
 # Set your GKE cluster name and assign it to env variable on your Cloud Shell
 export CLUSTER_NAME=gorgias-magic
@@ -38,13 +38,54 @@ then
     fi
 fi
 
-
 # Set user account, and other env variables
 export GCP_USER=$(gcloud config get-value account)
 (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
 (gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
 gcloud config set compute/zone $CLUSTER_ZONE
 
+
+
+#### Create Persistent Disks on Compute Engine for database volumes. 
+
+# # Create Persitent Disks in GCE. (won't override if they already exist)
+# gcloud compute disks create postgres-disk postgres-replica-disk  \
+# --type=pd-ssd --size=20GB \
+# --zone=$CLUSTER_ZONE --project=$GCP_PROJECT
+
+# # Create a VM to use for formatting the persistent disks
+# gcloud compute instances create formatter \
+# --project=$GCP_PROJECT \
+# --zone=us-central1-f \
+# --machine-type=f1-micro \
+# --disk=name=postgres-disk,device-name=postgres-disk,mode=rw,boot=no \
+# --disk=name=postgres-replica-disk,device-name=postgres-replica-disk,mode=rw,boot=no 
+
+# # Click on SSH for the formatter instance to open a Shell. Run this block of commands in the shell
+# lsblk               # output NAME sdb, sdc could be the name of the disks to be formatted
+# # Format the first disk (assume its name is sdb)
+# sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/sdb
+# # Format the second disk (assume its name is sdc)
+# sudo mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/sdc
+# # Mount the disks and create a directory on each disk
+# sudo mkdir /mnt/postgres
+# sudo mkdir /mnt/postgres-replica
+# sudo mount /dev/sdb /mnt/postgres
+# sudo mount /dev/sdc /mnt/postgres-replica
+# cd /mnt/postgres
+# sudo mkdir postgres-db
+# cd /mnt/postgres-replica
+# sudo mkdir postgres-db
+## Unmount the disks
+# cd ~
+# sudo umount /dev/sdb /dev/sdc
+
+# # Back to the Cloud Console and auto confirm delete the formatter instance
+# yes | gcloud compute instances delete formatter --project=$GCP_PROJECT --zone=us-central1-f
+
+
+
+#### Get GKE cluster ready ####
 
 # Check if GKE cluster is running. If not, create it
 (gcloud container clusters list  | grep $CLUSTER_NAME) || gcloud container clusters create $CLUSTER_NAME  --zone=$CLUSTER_ZONE --num-nodes 2
@@ -56,7 +97,6 @@ gcloud container clusters get-credentials $CLUSTER_NAME \
 kubectl create clusterrolebinding cluster-admin-binding \
 --clusterrole cluster-admin \
 --user $GCP_USER
-
 
 
 
@@ -78,14 +118,12 @@ kubectl create configmap postgres \
 --from-file=pg_hba.conf \
 --from-file=create-replica-user.sh
 
-# Create Persitent Disks in GCE. (won't override if they already exist)
-gcloud compute disks create postgres-disk postgres-replica-disk --size 20GB --zone=$CLUSTER_ZONE
-
 # Create Storage Class, Persistent Volumes, Persistent Volume Claims
 kubectl apply -f postgres-storage.yaml
 
 # Deploy the Postgres master and wait till it's running
 kubectl apply -f postgres-master.yaml
+
 # Deploy Postgres service (for both posgres master and replica)
 kubectl apply -f service.yaml
 
