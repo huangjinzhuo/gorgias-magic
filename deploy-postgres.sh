@@ -23,23 +23,24 @@ cd $APP_DIR
 
 #### Set variables ####
 
-# Set your GKE cluster name and assign it to env variable on your Cloud Shell
-export CLUSTER_NAME=gorgias-magic
+# Set user name, project name, and GKE cluster name on your Cloud Shell
 export GCP_PROJECT=gorgias-magic-777
-if [[ $GCP_PROJECT != $(gcloud config get-value core/project) ]]
-then
-    echo "Your selected project is not the intented project: ${GCP_PROJECT}"
-    read -p "Do you want to use the current project instead?(y/n) " -n 1 -r
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-        export GCP_PROJECT=$(gcloud config get-value core/project)
-        echo -e "\nNow project is set to $GCP_PROJECT"
-        sleep 2
-    fi
-fi
-
-# Set user account, and other env variables
+gcloud config set project $GCP_PROJECT
 export GCP_USER=$(gcloud config get-value account)
+export CLUSTER_NAME=gorgias-magic
+# if [[ $GCP_PROJECT != $(gcloud config get-value core/project) ]]
+# then
+#     echo "Your selected project is not the intented project: ${GCP_PROJECT}"
+#     read -p "Do you want to use the current project instead?(y/n) " -n 1 -r
+#     if [[ $REPLY =~ ^[Yy]$ ]]
+#     then
+#         export GCP_PROJECT=$(gcloud config get-value core/project)
+#         echo -e "\nNow project is set to $GCP_PROJECT"
+#         sleep 2
+#     fi
+# fi
+
+# Set Zone to the same as GKE cluster. If not exist, default 'us-central1-f'
 (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
 (gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
 gcloud config set compute/zone $CLUSTER_ZONE
@@ -88,7 +89,10 @@ gcloud config set compute/zone $CLUSTER_ZONE
 #### Get GKE cluster ready ####
 
 # Check if GKE cluster is running. If not, create it
-(gcloud container clusters list  | grep $CLUSTER_NAME) || gcloud container clusters create $CLUSTER_NAME  --zone=$CLUSTER_ZONE --num-nodes 2
+(gcloud container clusters list  | grep $CLUSTER_NAME) ||    \
+gcloud beta container clusters create $CLUSTER_NAME  \
+--zone=$CLUSTER_ZONE --num-nodes 2 \
+--addons=GcePersistentDiskCsiDriver
 
 # Give yourself access to the cluster
 gcloud container clusters get-credentials $CLUSTER_NAME \
