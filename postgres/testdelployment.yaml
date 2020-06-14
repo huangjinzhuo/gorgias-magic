@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: deployment
+metadata:
+  name: postgres
+  labels:
+    name: postgres
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+          name: nginx-http
+        - containerPort: 443
+          name: nginx-ssl-https
+      imagePullPolicy: IfNotPresent
+      volumeMounts:
+          - mountPath: /var/lib/postgresql/data/pgdata
+            name: gce-disk-postgres
+#              name: postgres
+            subPath: postgres-db
+
+  volumes:
+    - name: gce-disk-postgres
+      persistentVolumeClaim:
+        claimName: gorgias-postgres-0

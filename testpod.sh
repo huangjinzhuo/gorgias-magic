@@ -24,7 +24,7 @@ cd $APP_DIR
 #### Set variables ####
 
 # Set user name, project name, and GKE cluster name on your Cloud Shell
-export GCP_PROJECT=gorgias-magic-777
+export GCP_PROJECT=decoded-agency-280121
 gcloud config set project $GCP_PROJECT
 export GCP_USER=$(gcloud config get-value account)
 export CLUSTER_NAME=gorgias-magic
@@ -112,67 +112,16 @@ cd $APP_DIR/postgres
 
 # For better security, edit postgres/secret.yaml to set new secrets for postgres-main and postgres-replica.
 ## vi postgres/secret.yaml
-kubectl apply -f secret.yaml
+#kubectl apply -f secret.yaml
 
-# Create configmap
-kubectl create configmap postgres \
---from-file=postgres.conf \
---from-file=master.conf \
---from-file=replica.conf \
---from-file=pg_hba.conf \
---from-file=create-replica-user.sh
+
 
 # Create Storage Class, Persistent Volumes, Persistent Volume Claims
 kubectl apply -f postgres-storage.yaml
 
 # Deploy the Postgres master and wait till it's running
-kubectl apply -f postgres-master.yaml
+kubectl apply -f testdeployment.yaml
 
 # Deploy Postgres service (for both posgres master and replica)
 kubectl apply -f service.yaml
-
-# Make sure master is running before next step: deploy Postgres replica 
-while true; do
-    POD_STATUS=$(kubectl get pods |grep postgres-0 | awk '{print $3}' ) 
-    echo $POD_STATUS
-    if [[ $POD_STATUS != "Running" ]]
-    then
-        echo ""
-        echo "Postgres-0 is not ready. Checking pod status..."
-        kubectl get pods |grep postgres-0
-        echo "Sleep for 5 seconds"
-        sleep 5
-    else
-        echo "=========== Postgres-0 is ready ============"
-        break
-    fi
-done
-
-# Deploy Postgres replica 
-kubectl apply -f postgres-replica.yaml
-
-# Check replication
-kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"
-# If you see "Started streaming WAL from primary", the replication is working.
-
-
-
-
-
-#### Clean up (delete everything that's created with this script) ####
-
-# ## Delete deployments, services, configmaps, and secrets.
-# kubectl delete -f postgres-replica.yaml
-# kubectl delete -f service.yaml
-# kubectl delete -f postgres-master.yaml
-# kubectl delete configmap postgres
-# kubectl delete -f secret.yaml
-
-# ## You have to decide to keep or delete the storage.
-# # Go to GCP Console -> Kubernetes Engine -> Storage, and review the storage you want to delete, and delete from there.
-# # Also check here: GCP Console -> Compute Engine -> Disk
-
-# ## You also want to double check if the GKE cluster was created or pre-exiting. 
-# ## Be careful not to delete other deployments that use the same cluster.
-# gcloud container clusters delete $CLUSTER_NAME --zone=$CLUSTER_ZONE
 

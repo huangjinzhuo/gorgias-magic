@@ -62,4 +62,4 @@ spec:
     resources:
       requests:
         storage: 15Gi
-        storageClassName: ssd-faster
+    storageClassName: ssd-faster
