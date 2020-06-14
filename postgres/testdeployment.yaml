@@ -12,7 +12,7 @@ spec:
     type: Recreate
   template:
     metadata:
-      label:
+      labels:
         name: postgres
     spec:
       containers:
