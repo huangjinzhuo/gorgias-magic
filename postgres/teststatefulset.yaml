@@ -35,7 +35,7 @@ spec:
             claimName: gorgias-postgres-0
   volumeClaimTemplates:
   - metadata:
-      name: data
+      name: gorgias
     spec:
         accessModes: ["ReadWriteOnce"]
         resources:
