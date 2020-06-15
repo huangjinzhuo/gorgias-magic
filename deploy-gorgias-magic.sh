@@ -78,12 +78,13 @@ kubectl create clusterrolebinding cluster-admin-binding \
 
 
 # Make sure database engine (Postgres master) is running. If not, exit 
+echo "Checking Postgres status..."
 POD_STATUS=$(kubectl get pods |grep postgres-0 | awk '{print $3}' ) 
 echo $POD_STATUS
 if [[ $POD_STATUS != "Running" ]]
 then
     echo ""
-    echo "Postgres-0 is not ready. Run deploy-postgres.sh to deploy." 
+    echo "Postgres-0 is not ready. Run deploy-postgres.sh to deploy. Abort in 10 seconds" 
     sleep 10 && exit
 fi
 
