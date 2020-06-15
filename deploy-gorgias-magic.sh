@@ -14,31 +14,51 @@
 
 #### Get GKE cluster ready ####
 
-# Set your GKE cluster name and assign it to env variable on your Cloud Shell
-export CLUSTER_NAME=gorgias-magic
+
+# Find the application path. If not exist, download the application gorgias-magic
+export APP_DIR=$HOME/gorgias-magic
+[ ! -d $APP_DIR ] && cd $HOME && git clone https://github.com/huangjinzhuo/gorgias-magic.git 
+cd $APP_DIR
+# Now you can see this file at current directory. And you can continue this script step by step. Or just run
+# . deploy-gorgias-magic.sh          # Don't forget the dot(.) at the beginning
+
+
+
+#### Set Env variables on Cloud Shell ####
+
+# Set user name, project name, and GKE cluster name on your Cloud Shell
 export GCP_PROJECT=gorgias-magic-777
+export CLUSTER_NAME=gorgias-magic
+export GCP_USER=$(gcloud config get-value account)
+if [[ "" == $(gcloud config get-value core/project) ]]
+then
+    echo -e "\n\n Your don't have a project selected for Cloud Shell. Abort in 10 seconds"
+    sleep 10
+    exit 1
+else
+    echo -e "\n\nYour selected project is: $(gcloud config get-value core/project)"
+fi
 if [[ $GCP_PROJECT != $(gcloud config get-value core/project) ]]
 then
-    echo "Your selected project is not the intented project: ${GCP_PROJECT}"
-    read -p "Do you want to use the current project instead?(y/n) " -n 1 -r
+    echo "The  default project  is: ${GCP_PROJECT}"
+    read -p "Do you want to replace the default with the selected project?(y/n) " -n 1 -r
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
         export GCP_PROJECT=$(gcloud config get-value core/project)
-        echo -e "\nNow project is set to $GCP_PROJECT"
-        sleep 2
     fi
+    echo -e "\n\nNow project is set to $GCP_PROJECT \n"
+    gcloud config set project $GCP_PROJECT
+    sleep 2
 fi
 
-
-# Set user account, and other env variables
-export GCP_USER=$(gcloud config get-value account)
+# Set Zone to the same as GKE cluster. If not exist, default 'us-central1-f'
 (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
 (gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
 gcloud config set compute/zone $CLUSTER_ZONE
-export APP_DIR=$HOME/gorgias-magic
 
 
-# # Set env variables for connecting to local PostgreSQL for local testing only. For PostgreSQL deployed in the cloud, these variables are set through yaml file such as flask-deployment.yaml
+# # Set env variables for connecting to local PostgreSQL for local testing only. 
+# # If connect to PostgreSQL in the cloud, these variables are set through yaml file flask-deployment.yaml
 # export POSTGRES_DB_USER="postgres"
 # export POSTGRES_DB_PSWD="postgres"
 # export POSTGRES_SERVICE_HOST="127.0.0.1"

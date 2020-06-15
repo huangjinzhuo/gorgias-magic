@@ -38,7 +38,7 @@ else
 fi
 if [[ $GCP_PROJECT != $(gcloud config get-value core/project) ]]
 then
-    echo "The default project is: ${GCP_PROJECT}"
+    echo "The  default project  is: ${GCP_PROJECT}"
     read -p "Do you want to replace the default with the selected project?(y/n) " -n 1 -r
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
@@ -175,9 +175,10 @@ while true; do
 done
 
 # Check replication
-echo -e "Checking replication status..."
-kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"
-# If you see "Started streaming WAL from primary", the replication is working. 
+echo -e "\n\nInstallation completed. To check replication status, run the following command:\n"
+echo -e 'kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"'
+# kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"
+echo -e "\nIf you see output with \"Started streaming WAL from primary\", the replication is working. Ctrl-C to exit"
 
 
 

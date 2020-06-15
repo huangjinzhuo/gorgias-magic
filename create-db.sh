@@ -44,9 +44,9 @@ CREATE TABLE todos(
      todo TEXT NOT NULL,
      days INTEGER
 );
-
+# You should see CREATE TABLE message and you should be at the magicdb=# prompt.
 
 # You are done. Enter \q to exit, then enter exit 2 times to get to the Cloud Shell,
-postgres=# \q
+magicdb=# \q
 postgres@postgres-0:~$ exit
 root@postgres-0:/# exit
