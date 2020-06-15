@@ -21,24 +21,33 @@ cd $APP_DIR
 # . deploy-postgres.sh          # Don't forget the dot(.) at the beginning
 
 
+
 #### Set variables ####
 
 # Set user name, project name, and GKE cluster name on your Cloud Shell
 export GCP_PROJECT=gorgias-magic-777
-gcloud config set project $GCP_PROJECT
-export GCP_USER=$(gcloud config get-value account)
 export CLUSTER_NAME=gorgias-magic
-# if [[ $GCP_PROJECT != $(gcloud config get-value core/project) ]]
-# then
-#     echo "Your selected project is not the intented project: ${GCP_PROJECT}"
-#     read -p "Do you want to use the current project instead?(y/n) " -n 1 -r
-#     if [[ $REPLY =~ ^[Yy]$ ]]
-#     then
-#         export GCP_PROJECT=$(gcloud config get-value core/project)
-#         echo -e "\nNow project is set to $GCP_PROJECT"
-#         sleep 2
-#     fi
-# fi
+export GCP_USER=$(gcloud config get-value account)
+if [[ "" == $(gcloud config get-value core/project) ]]
+then
+    echo -e "\n\n Your don't have a project selected for Cloud Shell. Abort in 10 seconds"
+    sleep 10
+    exit 1
+else
+    echo -e "\n\nYour selected project is: $(gcloud config get-value core/project)"
+fi
+if [[ $GCP_PROJECT != $(gcloud config get-value core/project) ]]
+then
+    echo "The default project is: ${GCP_PROJECT}"
+    read -p "Do you want to replace the default with the selected project?(y/n) " -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        export GCP_PROJECT=$(gcloud config get-value core/project)
+    fi
+    echo -e "\n\nNow project is set to $GCP_PROJECT \n"
+    gcloud config set project $GCP_PROJECT
+    sleep 2
+fi
 
 # Set Zone to the same as GKE cluster. If not exist, default 'us-central1-f'
 (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
