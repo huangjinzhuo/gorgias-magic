@@ -120,7 +120,7 @@ cd $APP_DIR/postgres
 kubectl apply -f postgres-storage.yaml
 
 # Deploy the Postgres master and wait till it's running
-kubectl apply -f testdeployment.yaml
+kubectl apply -f teststatefulset.yaml
 
 # Deploy Postgres service (for both posgres master and replica)
 kubectl apply -f service.yaml
