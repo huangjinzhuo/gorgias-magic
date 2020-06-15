@@ -99,8 +99,7 @@ spec:
 
           volumeMounts:
             - mountPath: /var/lib/postgresql/data/pgdata
-              name: gce-disk-postgres
-#              name: postgres
+              name: gorgias
               subPath: postgres-db
               
             - name: postgres-config
@@ -121,7 +120,6 @@ spec:
           
   volumeClaimTemplates:
   - metadata:
-#      name: postgres
       name: gorgias
     spec:
       accessModes: ["ReadWriteOnce"]

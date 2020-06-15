@@ -15,6 +15,7 @@ spec:
       labels:
         name: postgres
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
         - image: nginx
           name: nginx
@@ -27,7 +28,6 @@ spec:
           volumeMounts:
               - mountPath: /var/lib/postgresql/data/pgdata
                 name: gce-disk-postgres
-    #              name: postgres
                 subPath: postgres-db
       volumes:
         - name: gce-disk-postgres
