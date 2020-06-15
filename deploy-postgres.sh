@@ -134,16 +134,14 @@ kubectl apply -f service.yaml
 # Make sure master is running before next step: deploy Postgres replica 
 while true; do
     POD_STATUS=$(kubectl get pods |grep postgres-0 | awk '{print $3}' ) 
-    echo $POD_STATUS
+    kubectl get pods |grep postgres-0
     if [[ $POD_STATUS != "Running" ]]
     then
         echo ""
-        echo "Postgres-0 is not ready. Checking pod status..."
-        kubectl get pods |grep postgres-0
-        echo "Sleep for 5 seconds"
-        sleep 5
+        echo "Postgres-0 is not ready. Sleep for 10 seconds..."
+        sleep 10
     else
-        echo "=========== Postgres-0 is ready ============"
+        echo -e "=========== Postgres-0 is ready ============\n"
         break
     fi
 done
@@ -151,9 +149,26 @@ done
 # Deploy Postgres replica 
 kubectl apply -f postgres-replica.yaml
 
+
+# Wait for replica to get ready 
+while true; do
+    POD_STATUS=$(kubectl get pods |grep postgres-replica-0 | awk '{print $3}' ) 
+    kubectl get pods |grep postgres-replica-0
+    if [[ $POD_STATUS != "Running" ]]
+    then
+        echo ""
+        echo "Postgres-replica-0 is not ready. Sleep for 10 seconds..."
+        sleep 10
+    else
+        echo -e "=========== Postgres-replica-0 is ready ============\n"
+        break
+    fi
+done
+
 # Check replication
+echo -e "Checking replication status..."
 kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"
-# If you see "Started streaming WAL from primary", the replication is working.
+# If you see "Started streaming WAL from primary", the replication is working. 
 
 
 

@@ -81,6 +81,9 @@ fi
 cd $APP_DIR
 gcloud builds submit -t gcr.io/$GCP_PROJECT/gorgias-magic ./
 
+# Point the path of container image to the newly built image
+sed -i s/my-project-id/${GCP_PROJECT}/g flask-deployment.yaml
+
 # Dedploy the Flask app and Flask service
 kubectl apply -f flask-deployment.yaml
 kubectl apply -f flask-service.yaml

@@ -5,6 +5,7 @@ metadata:
 spec:
   updateStrategy:
     type: RollingUpdate
+# RollingUpdate is the default for StatefulSet. The only other valid type is: OnDelete
   
   selector:
     matchLabels:
