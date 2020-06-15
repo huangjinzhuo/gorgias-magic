@@ -175,10 +175,11 @@ while true; do
 done
 
 # Check replication
+cd $APP_DIR/
 echo -e "\n\nInstallation completed. To check replication status, run the following command:\n"
 echo -e 'kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"'
 # kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"
-echo -e "\nIf you see output with \"Started streaming WAL from primary\", the replication is working. Ctrl-C to exit"
+echo -e "\nIf you see output with \"Started streaming WAL from primary\", the replication is working. Ctrl-C to exit\n"
 
 
 
@@ -186,7 +187,7 @@ echo -e "\nIf you see output with \"Started streaming WAL from primary\", the re
 
 #### Clean up (delete everything that's created with this script) ####
 
-# ## Delete deployments, services, configmaps, and secrets.
+# ## Delete StatefulSets, services, configmaps, and secrets.
 # kubectl delete -f postgres-replica.yaml
 # kubectl delete -f service.yaml
 # kubectl delete -f postgres-master.yaml
