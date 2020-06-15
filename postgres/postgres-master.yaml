@@ -22,9 +22,6 @@ spec:
         - name: postgres-config
           configMap:
             name: postgres
-        - name: gce-disk-postgres
-          persistentVolumeClaim:
-            claimName: gorgias-postgres-0
       containers:
         - name: postgres
           image: postgres:10.5
@@ -123,7 +120,7 @@ spec:
       name: gorgias
     spec:
       accessModes: ["ReadWriteOnce"]
-      storageClassName: "ssd-faster"
+      storageClassName: ssd-faster
       resources:
         requests:
           storage: 15Gi

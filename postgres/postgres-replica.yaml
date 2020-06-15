@@ -22,9 +22,6 @@ spec:
         - name: postgres-config
           configMap:
             name: postgres
-        - name: gce-disk-postgres-replica
-          persistentVolumeClaim:
-            claimName: gorgias-postgres-replica-0
       initContainers:
         - name: setup-replica-data-directory
           image: postgres:10.5
@@ -49,8 +46,7 @@ spec:
             fi
           volumeMounts:
             - mountPath: /var/lib/postgresql/data/pgdata
-              name: gce-disk-postgres-replica
-#              name: postgres-replica
+              name: gorgias
               subPath: postgres-db
 
       containers:
@@ -121,8 +117,7 @@ spec:
 
           volumeMounts:
             - mountPath: /var/lib/postgresql/data/pgdata
-              name: gce-disk-postgres-replica
-#              name: postgres-replica
+              name: gorgias
               subPath: postgres-db
             
             - name: postgres-config
@@ -132,13 +127,10 @@ spec:
             - name: postgres-config
               mountPath: /etc/replica.conf
               subPath: replica.conf
-            
-      
           
   volumeClaimTemplates:
   - metadata:
-#    name: postgres
-    name: gorgias
+      name: gorgias
     spec:
       accessModes: ["ReadWriteOnce"]
       storageClassName: ssd-faster

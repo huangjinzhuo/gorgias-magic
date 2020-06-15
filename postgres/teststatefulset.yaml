@@ -27,17 +27,16 @@ spec:
           imagePullPolicy: IfNotPresent
           volumeMounts:
               - mountPath: /var/lib/postgresql/data/pgdata
-                name: gce-disk-postgres
+                name: gorgias
                 subPath: postgres-db
-      volumes:
-        - name: gce-disk-postgres
-          persistentVolumeClaim:
-            claimName: gorgias-postgres-0
+ 
   volumeClaimTemplates:
   - metadata:
       name: gorgias
     spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-            requests:
-                storage: 15Gi
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ssd-faster
+      resources:
+        requests:
+          storage: 15Gi
+    
