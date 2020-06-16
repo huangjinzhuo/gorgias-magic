@@ -50,7 +50,7 @@ then
     sleep 2
 fi
 
-# # Set Zone to the same as GKE cluster. If not exist, default 'us-central1-f'
+# # Set Zone to the same as GKE cluster. If not exist, default 'us-/al1-f'
 # (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
 # (gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
 gcloud config set compute/zone $CLUSTER_ZONE
@@ -67,7 +67,7 @@ gcloud config set compute/zone $CLUSTER_ZONE
 # # Create a VM to use for formatting the persistent disks
 # gcloud compute instances create formatter \
 # --project=$GCP_PROJECT \
-# --zone=us-central1-f \
+# --zone=$CLUSTER_ZONE \
 # --machine-type=f1-micro \
 # --disk=name=postgres-disk,device-name=postgres-disk,mode=rw,boot=no \
 # --disk=name=postgres-replica-disk,device-name=postgres-replica-disk,mode=rw,boot=no 
@@ -99,7 +99,7 @@ gcloud config set compute/zone $CLUSTER_ZONE
 #### Get GKE cluster ready ####
 
 # Check if GKE cluster is running. If not, create it
-(gcloud container clusters list  | grep $CLUSTER_NAME) ||    \
+(gcloud container clusters list --zone=$CLUSTER_ZONE | grep $CLUSTER_NAME) ||    \
 gcloud beta container clusters create $CLUSTER_NAME  \
 --zone=$CLUSTER_ZONE --num-nodes 2 \
 --addons=GcePersistentDiskCsiDriver
