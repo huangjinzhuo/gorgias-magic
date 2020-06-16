@@ -130,8 +130,3 @@ while true; do
         sleep 10
     fi
 done
-
-
-#### Clean up Gorgias Magic StatefulSet 
-# kubectl delete -f flask-deployment.yaml
-# kubectl delete -f flask-service.yaml

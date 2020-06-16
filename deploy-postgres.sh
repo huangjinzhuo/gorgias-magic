@@ -118,28 +118,28 @@ kubectl create clusterrolebinding cluster-admin-binding \
 
 # Clone repository if it's not already in your home directory
 # git clone https://github.com/huangjinzhuo/gorgias-magic.git
-cd $APP_DIR/postgres
+cd $APP_DIR
 
 # For better security, edit postgres/secret.yaml to set new secrets for postgres-main and postgres-replica.
 ## vi postgres/secret.yaml
-kubectl apply -f secret.yaml
+kubectl apply -f ./postgres/secret.yaml
 
 # Create configmap
 kubectl create configmap postgres \
---from-file=postgres.conf \
---from-file=master.conf \
---from-file=replica.conf \
---from-file=pg_hba.conf \
---from-file=create-replica-user.sh
+--from-file=./postgres/postgres.conf \
+--from-file=./postgres/master.conf \
+--from-file=./postgres/replica.conf \
+--from-file=./postgres/pg_hba.conf \
+--from-file=./postgres/create-replica-user.sh
 
 # Create Storage Class, Persistent Volumes, Persistent Volume Claims
-kubectl apply -f postgres-storage.yaml
+kubectl apply -f ./postgres/postgres-storage.yaml
 
 # Deploy the Postgres master and wait till it's running
-kubectl apply -f postgres-master.yaml
+kubectl apply -f ./postgres/postgres-master.yaml
 
 # Deploy Postgres service (for both posgres master and replica)
-kubectl apply -f service.yaml
+kubectl apply -f ./postgres/service.yaml
 
 # Make sure master is running before next step: deploy Postgres replica 
 while true; do
@@ -157,7 +157,7 @@ while true; do
 done
 
 # Deploy Postgres replica 
-kubectl apply -f postgres-replica.yaml
+kubectl apply -f ./postgres/postgres-replica.yaml
 
 
 # Wait for replica to get ready 
@@ -176,9 +176,8 @@ while true; do
 done
 
 # Check replication
-cd $APP_DIR/
 echo -e "\n\nInstallation completed. To check replication status, run the following command:\n"
-echo -e 'kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"'
+echo -e 'kubectl logs -f ./postgres/postgres-replica-0 | grep "started streaming WAL from primary"'
 # kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"
 echo -e "\nIf you see output with \"Started streaming WAL from primary\", the replication is working. Ctrl-C to exit\n"
 
@@ -189,17 +188,18 @@ echo -e "\nIf you see output with \"Started streaming WAL from primary\", the re
 #### Clean up (delete everything that's created with this script) ####
 
 # ## Delete StatefulSets, services, configmaps, and secrets.
-# kubectl delete -f postgres-replica.yaml
-# kubectl delete -f service.yaml
-# kubectl delete -f postgres-master.yaml
+# kubectl delete -f ./postgres/postgres-replica.yaml
+# kubectl delete -f ./postgres/service.yaml
+# kubectl delete -f ./postgres/postgres-master.yaml
 # kubectl delete configmap postgres
-# kubectl delete -f secret.yaml
+# kubectl delete -f ./postgres/secret.yaml
 
 # ## You have to decide to keep or delete the storage.
 # # Go to GCP Console -> Kubernetes Engine -> Storage, and review the storage you want to delete, and delete from there.
 # # Also check here: GCP Console -> Compute Engine -> Disk
 
-# ## You also want to double check if the GKE cluster was created or pre-exiting. 
-# ## Be careful not to delete other deployments that use the same cluster.
-# gcloud container clusters delete $CLUSTER_NAME --zone=$CLUSTER_ZONE
-
+# ## You also want to double check if the GKE cluster has other workloads before deleting it. 
+# ## Delete the GKE cluster will also delete other workloads in the cluster.
+# yes | gcloud container clusters delete $CLUSTER_NAME --zone=$CLUSTER_ZONE
+# (gcloud container clusters list --zone=$CLUSTER_ZONE | grep $CLUSTER_NAME) ||  \
+# echo -e "\n$CLUSTER_NAME is deleted. Your persistent disks, if any, are kept.\n"
