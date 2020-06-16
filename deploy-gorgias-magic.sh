@@ -29,6 +29,7 @@ cd $APP_DIR
 # Set user name, project name, and GKE cluster name on your Cloud Shell
 export GCP_PROJECT=gorgias-magic-777
 export CLUSTER_NAME=gorgias-magic
+export CLUSTER_ZONE="us-central1-f"
 export GCP_USER=$(gcloud config get-value account)
 if [[ "" == $(gcloud config get-value core/project) ]]
 then
@@ -51,9 +52,9 @@ then
     sleep 2
 fi
 
-# Set Zone to the same as GKE cluster. If not exist, default 'us-central1-f'
-(gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
-(gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
+# # Set Zone to the same as GKE cluster. If not exist, default 'us-central1-f'
+# (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
+# (gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
 gcloud config set compute/zone $CLUSTER_ZONE
 
 
@@ -66,7 +67,8 @@ gcloud config set compute/zone $CLUSTER_ZONE
 # export POSTGRES_DB_NAME="postgres"
 
 # Check if GKE cluster is running. If not, exit
-(gcloud container clusters list  | grep $CLUSTER_NAME) || (echo "GKE cluster and database engine are not ready.Run deploy-postgres.sh to create them." && sleep 10 && exit)
+(gcloud container clusters list --zone=$CLUSTER_ZONE | grep $CLUSTER_NAME) ||  \
+(echo "GKE cluster and database engine are not ready.Run deploy-postgres.sh to create them." && sleep 10 && exit)
 
 # Give yourself access to the cluster
 gcloud container clusters get-credentials $CLUSTER_NAME \
