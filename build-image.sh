@@ -98,35 +98,9 @@ fi
 
 
 
-#### Deploy Flask application ####
+#### Build container image  ####
 
-# Build Docker image 
+# build container image and save it to GCP Container Registry
 cd $APP_DIR
 gcloud builds submit -t gcr.io/$GCP_PROJECT/gorgias-magic ./
 
-# Point the path of container image to the newly built image
-sed -i s/my-project-id/${GCP_PROJECT}/g flask-deployment.yaml
-
-# Dedploy the Flask app and Flask service
-kubectl apply -f flask-deployment.yaml
-kubectl apply -f flask-service.yaml
-
-# Wait for deployment get ready
-while true; do
-    POD_STATUS=$(kubectl get pods | grep flask-app | awk '{print $3}' ) 
-    echo $POD_STATUS | grep -w "Running"
-    if [[ $? == 0 ]]
-    then
-        echo -e "\n\n================= Gorgias Magic  is ready =================\n"
-        # Display service EXTERNAL-IP
-        kubectl get services gorgias-service
-        echo -e "\nYou can connect to the application via   http://<EXTERNAL-IP>\n"
-        break
-    else
-        echo ""
-        echo "Gorgias Magic deployment is not ready. Checking pod status..."
-        kubectl get pods |grep flask-app
-        echo "Sleep for 10 seconds"
-        sleep 10
-    fi
-done

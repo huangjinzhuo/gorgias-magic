@@ -100,9 +100,9 @@ fi
 
 #### Deploy Flask application ####
 
-# Build Docker image 
-cd $APP_DIR
-gcloud builds submit -t gcr.io/$GCP_PROJECT/gorgias-magic ./
+# # Build Docker image. This section has been moved to a seperate script - build-image.sh
+# cd $APP_DIR
+# gcloud builds submit -t gcr.io/$GCP_PROJECT/gorgias-magic ./
 
 # Point the path of container image to the newly built image
 sed -i s/my-project-id/${GCP_PROJECT}/g flask-deployment.yaml
