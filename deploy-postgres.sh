@@ -27,6 +27,7 @@ cd $APP_DIR
 # Set user name, project name, and GKE cluster name on your Cloud Shell
 export GCP_PROJECT=gorgias-magic-777
 export CLUSTER_NAME=gorgias-magic
+export CLUSTER_ZONE="us-central1-f"
 export GCP_USER=$(gcloud config get-value account)
 if [[ "" == $(gcloud config get-value core/project) ]]
 then
@@ -49,9 +50,9 @@ then
     sleep 2
 fi
 
-# Set Zone to the same as GKE cluster. If not exist, default 'us-central1-f'
-(gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
-(gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
+# # Set Zone to the same as GKE cluster. If not exist, default 'us-central1-f'
+# (gcloud container clusters list  | grep $CLUSTER_NAME) && export CLUSTER_ZONE=$(gcloud container clusters list --format json | jq '.[] | select(.name=="'${CLUSTER_NAME}'") | .zone' | awk -F'"' '{print $2}')
+# (gcloud container clusters list  | grep $CLUSTER_NAME) || export CLUSTER_ZONE="us-central1-f"
 gcloud config set compute/zone $CLUSTER_ZONE
 
 
@@ -91,7 +92,7 @@ gcloud config set compute/zone $CLUSTER_ZONE
 # sudo umount /dev/sdb /dev/sdc
 
 # # Back to the Cloud Console and auto confirm delete the formatter instance
-# yes | gcloud compute instances delete formatter --project=$GCP_PROJECT --zone=us-central1-f
+# yes | gcloud compute instances delete formatter --project=$GCP_PROJECT --zone=$CLUSTER_ZONE
 
 
 
