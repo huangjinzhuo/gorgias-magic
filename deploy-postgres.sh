@@ -177,7 +177,7 @@ done
 
 # Check replication
 echo -e "\n\nInstallation completed. To check replication status, run the following command:\n"
-echo -e 'kubectl logs -f ./postgres/postgres-replica-0 | grep "started streaming WAL from primary"'
+echo -e 'kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"'
 # kubectl logs -f postgres-replica-0 | grep "started streaming WAL from primary"
 echo -e "\nIf you see output with \"Started streaming WAL from primary\", the replication is working. Ctrl-C to exit\n"
 
